@@ -73,7 +73,7 @@ class LinkedInService(BaseService):
     
     async def _start_auth_flow(self, params: Dict[str, Any]) -> ServiceResponse:
         """Start LinkedIn OAuth flow - returns redirect URL without blocking"""
-        scope = params.get("scope", "openid profile email w_member_social")
+        scope = params.get("scope", "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions")
         state = params.get("state", "secure_random_state")
         
         if not self.client_id or not self.client_secret:
@@ -105,7 +105,7 @@ class LinkedInService(BaseService):
 
     async def _get_auth_url(self, params: Dict[str, Any]) -> ServiceResponse:
         """Generate LinkedIn OAuth authorization URL"""
-        scope = params.get("scope", "openid profile email w_member_social")
+        scope = params.get("scope", "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions")
         state = params.get("state", "random_state")
         
         client = OAuth2Session(

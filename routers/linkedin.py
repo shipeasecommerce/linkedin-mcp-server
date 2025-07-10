@@ -8,7 +8,7 @@ from services.base import ServiceRequest
 router = APIRouter(prefix="/linkedin", tags=["LinkedIn"])
 
 class AuthRequest(BaseModel):
-    scope: Optional[str] = "openid profile email w_member_social"
+    scope: Optional[str] = "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions"
     state: Optional[str] = "random_state"
 
 class TokenRequest(BaseModel):
@@ -26,7 +26,7 @@ def get_service_registry() -> ServiceRegistry:
 
 @router.get("/auth")
 async def start_linkedin_auth(
-    scope: str = Query("openid profile email w_member_social"),
+    scope: str = Query("openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions"),
     registry: ServiceRegistry = Depends(get_service_registry)
 ):
     """Start LinkedIn OAuth flow by redirecting to authorization URL"""

@@ -1,0 +1,30 @@
+{
+  "name": "my-mcp-server",
+  "version": "1.0.0",
+  "description": "A Model Context Protocol (MCP) server for handling different services",
+  "scripts": {
+    "start": "python main.py",
+    "dev": "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "prod": "uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4",
+    "install": "uv sync",
+    "install-dev": "uv sync --dev",
+    "lint": "ruff check .",
+    "format": "ruff format .",
+    "test": "pytest",
+    "clean": "find . -type d -name __pycache__ -delete && find . -name '*.pyc' -delete"
+  },
+  "keywords": [
+    "mcp",
+    "fastapi",
+    "linkedin",
+    "api",
+    "server"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:shipeasecommerce/my-mcp-server.git"
+  },
+  "engines": {
+    "python": ">=3.8"
+  }
+}

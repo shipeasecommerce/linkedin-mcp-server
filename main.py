@@ -211,7 +211,7 @@ async def mcp_endpoint(request: Request):
                             "inputSchema": {
                                 "type": "object",
                                 "properties": {
-                                    "scope": {"type": "string", "default": "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions r_dma_admin_pages_content"}
+                                    "scope": {"type": "string", "default": "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_dma_admin_pages_content"}
                                 }
                             }
                         },
@@ -281,6 +281,21 @@ async def mcp_endpoint(request: Request):
                                     "access_token": {"type": "string"}
                                 }
                             }
+                        },
+                        {
+                            "name": "search_jobs",
+                            "description": "Search for LinkedIn jobs",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {"type": "string", "default": "python"},
+                                    "count": {"type": "integer", "default": 2},
+                                    "location": {"type": "string"},
+                                    "company": {"type": "string"},
+                                    "user_id": {"type": "string", "default": "default_user"},
+                                    "access_token": {"type": "string"}
+                                }
+                            }
                         }
                     ]
                 }
@@ -312,7 +327,7 @@ async def mcp_endpoint(request: Request):
                     }
                 })
             
-            elif tool_name in ["get_profile", "create_post", "get_posts", "get_experience", "get_courses", "get_certifications"]:
+            elif tool_name in ["get_profile", "create_post", "get_posts", "get_experience", "get_courses", "get_certifications", "search_jobs"]:
                 from services.base import ServiceRequest
                 service_request = ServiceRequest(
                     service_name="linkedin",

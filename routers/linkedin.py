@@ -8,7 +8,7 @@ from services.base import ServiceRequest
 router = APIRouter(prefix="/linkedin", tags=["LinkedIn"])
 
 class AuthRequest(BaseModel):
-    scope: Optional[str] = "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions r_dma_admin_pages_content"
+    scope: Optional[str] = "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_dma_admin_pages_content"
     state: Optional[str] = "random_state"
 
 class TokenRequest(BaseModel):
@@ -26,7 +26,7 @@ def get_service_registry() -> ServiceRegistry:
 
 @router.get("/auth")
 async def start_linkedin_auth(
-    scope: str = Query("openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions r_dma_admin_pages_content"),
+    scope: str = Query("openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_dma_admin_pages_content"),
     registry: ServiceRegistry = Depends(get_service_registry)
 ):
     """Start LinkedIn OAuth flow by redirecting to authorization URL"""
@@ -312,5 +312,36 @@ async def get_experience(
     
     if not response.success:
         raise HTTPException(status_code=401, detail=response.error)
+    
+    return response.data
+
+@router.get("/search-jobs")
+async def search_jobs(
+    title: str = Query("python"),
+    count: int = Query(2),
+    location: Optional[str] = Query(None),
+    company: Optional[str] = Query(None),
+    user_id: str = Query("default_user"),
+    access_token: Optional[str] = Query(None),
+    registry: ServiceRegistry = Depends(get_service_registry)
+):
+    """Search for LinkedIn jobs"""
+    request = ServiceRequest(
+        service_name="linkedin",
+        method="search_jobs",
+        parameters={
+            "title": title,
+            "count": count,
+            "location": location,
+            "company": company,
+            "access_token": access_token,
+            "user_id": user_id
+        }
+    )
+    
+    response = await registry.handle_request(request)
+    
+    if not response.success:
+        raise HTTPException(status_code=400, detail=response.error)
     
     return response.data

@@ -295,9 +295,22 @@ class LinkedInService(BaseService):
                 )
             access_token = stored_token.access_token
         
+        # Get user profile to get person URN
+        try:
+            profile_data = await self._make_authenticated_request(
+                access_token, 
+                "../userinfo"
+            )
+            person_id = profile_data.get('sub')  # This is the person ID from userinfo
+        except Exception as e:
+            return ServiceResponse(
+                success=False,
+                error=f"Failed to get user profile for fetching posts: {str(e)}"
+            )
+
         posts = await self._make_authenticated_request(
             access_token,
-            "shares?q=owners&owners=urn:li:person:{person-id}"
+            f"ugcPosts?q=authors&authors=urn:li:person:{person_id}"
         )
         
         return ServiceResponse(

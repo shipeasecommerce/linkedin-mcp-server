@@ -182,7 +182,7 @@ class LinkedInService(BaseService):
         }
         
         # Add LinkedIn API version headers for Posts API
-        if endpoint in ["posts", "rest/posts"]:
+        if endpoint in ["posts", "rest/posts", "ugcPosts"]:
             headers.update({
                 "LinkedIn-Version": "202411",
                 "X-Restli-Protocol-Version": "2.0.0"

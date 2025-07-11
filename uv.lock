@@ -349,6 +349,7 @@ dependencies = [
     { name = "httpx" },
     { name = "mcp" },
     { name = "python-dotenv" },
+    { name = "python3-linkedin" },
     { name = "requests" },
     { name = "sqlalchemy" },
     { name = "uvicorn", extra = ["standard"] },
@@ -369,6 +370,7 @@ requires-dist = [
     { name = "httpx", specifier = "==0.27.0" },
     { name = "mcp", specifier = "==1.6.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "python3-linkedin", specifier = ">=1.0.2" },
     { name = "requests", specifier = ">=2.31.0" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.24.0" },
@@ -376,6 +378,15 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=7.0.0" }]
+
+[[package]]
+name = "oauthlib"
+version = "3.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/5f/19930f824ffeb0ad4372da4812c50edbd1434f678c90c2733e1188edfc63/oauthlib-3.3.1.tar.gz", hash = "sha256:0f0f8aa759826a193cf66c12ea1af1637f87b9b4622d46e866952bb022e538c9", size = 185918, upload-time = "2025-06-19T22:48:08.269Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl", hash = "sha256:88119c938d2b8fb88561af5f6ee0eec8cc8d552b7bb1f712743136eb7523b7a1", size = 160065, upload-time = "2025-06-19T22:48:06.508Z" },
+]
 
 [[package]]
 name = "packaging"
@@ -496,6 +507,20 @@ wheels = [
 ]
 
 [[package]]
+name = "python3-linkedin"
+version = "1.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+    { name = "requests-oauthlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d5/ac/76b8ca786973677652721d013cd85cdc393949ab709b83dfa5fded64e5a3/python3-linkedin-1.0.2.tar.gz", hash = "sha256:57fd2d60a268e6b4c10122b2bfa3c6a4d71aa270e90a5a60c49ad053b18e71a0", size = 23826, upload-time = "2017-09-21T12:37:56.721Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/82/eb274d7366e126484d62f07c5ba4e23c99f4d388464aa5f3750b5d417df6/python3_linkedin-1.0.2-py2.py3-none-any.whl", hash = "sha256:5b428259d93c82d4905e790e9d8faa7747bd1e7341d3ec730ebba96be6f1e86f", size = 25034, upload-time = "2017-09-21T12:37:53.453Z" },
+    { url = "https://files.pythonhosted.org/packages/9a/d1/f0ea84783114b1a956755f0dc938de0ad096d5978e01582ac944755fb48a/python3_linkedin-1.0.2-py3-none-any.whl", hash = "sha256:928dd31a4605e09f7f4df84c7cdadf02192d13d6f999097b44b51672a2b9d1cb", size = 25030, upload-time = "2017-09-21T12:37:55.004Z" },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -525,6 +550,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e1/0a/929373653770d8a0d7ea76c37de6e41f11eb07559b103b1c02cafb3f7cf8/requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422", size = 135258, upload-time = "2025-06-09T16:43:07.34Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7c/e4/56027c4a6b4ae70ca9de302488c5ca95ad4a39e190093d6c1a8ace08341b/requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c", size = 64847, upload-time = "2025-06-09T16:43:05.728Z" },
+]
+
+[[package]]
+name = "requests-oauthlib"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "oauthlib" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9", size = 55650, upload-time = "2024-03-22T20:32:29.939Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36", size = 24179, upload-time = "2024-03-22T20:32:28.055Z" },
 ]
 
 [[package]]

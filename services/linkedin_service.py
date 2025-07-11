@@ -261,6 +261,7 @@ class LinkedInService(BaseService):
         preferring the SDK's `get_profile`."""
         access_token = params.get("access_token")
         user_id = params.get("user_id", "default_user")
+        selectors = params.get("selectors", None)
 
         if not access_token:
             stored_token = await get_valid_token(user_id)
@@ -277,7 +278,10 @@ class LinkedInService(BaseService):
             # The SDK's get_profile() typically fetches basic profile information.
             # If more specific fields are needed, you might need to use _make_authenticated_request
             # with specific projections, e.g., 'me?projection=(id,firstName,lastName,profilePicture(displayImage~:elements*(identifiers*)))'
-            profile_data = linkedin_client.get_profile()
+            if selectors:
+                profile_data = linkedin_client.get_profile(selectors=selectors)
+            else:
+                profile_data = linkedin_client.get_profile()
 
             return ServiceResponse(
                 success=True,

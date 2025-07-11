@@ -222,7 +222,8 @@ async def mcp_endpoint(request: Request):
                                 "type": "object",
                                 "properties": {
                                     "user_id": {"type": "string", "default": "default_user"},
-                                    "access_token": {"type": "string"}
+                                    "access_token": {"type": "string"},
+                                    "selectors": {"type": "array", "items": {"type": "string"}}
                                 }
                             }
                         },

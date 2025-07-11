@@ -297,6 +297,17 @@ async def mcp_endpoint(request: Request):
                                     "access_token": {"type": "string"}
                                 }
                             }
+                        },
+                        {
+                            "name": "get_userinfo",
+                            "description": "Get LinkedIn user info via /v2/userinfo endpoint",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {"type": "string", "default": "default_user"},
+                                    "access_token": {"type": "string"}
+                                }
+                            }
                         }
                     ]
                 }
@@ -328,7 +339,7 @@ async def mcp_endpoint(request: Request):
                     }
                 })
             
-            elif tool_name in ["get_profile", "create_post", "get_posts", "get_experience", "get_courses", "get_certifications", "search_jobs"]:
+            elif tool_name in ["get_profile", "create_post", "get_posts", "get_experience", "get_courses", "get_certifications", "search_jobs", "get_userinfo"]:
                 from services.base import ServiceRequest
                 service_request = ServiceRequest(
                     service_name="linkedin",

@@ -54,6 +54,7 @@ class LinkedInService(BaseService):
             "exchange_code_for_token",
             "get_profile",
             "get_user_info", # Note: SDK doesn't have a direct 'user_info' equivalent, will rely on profile
+            "get_userinfo", # New method using /v2/userinfo endpoint
             "get_connections",
             "get_posts",
             "create_post",
@@ -78,6 +79,8 @@ class LinkedInService(BaseService):
                 return await self._get_profile(params)
             elif method == "get_user_info":
                 return await self._get_user_info(params)
+            elif method == "get_userinfo":
+                return await self._get_userinfo(params)
             elif method == "get_connections":
                 return await self._get_connections(params)
             elif method == "get_posts":
@@ -352,6 +355,38 @@ class LinkedInService(BaseService):
                 error=f"Failed to fetch user info: {str(e)}"
             )
 
+    async def _get_userinfo(self, params: Dict[str, Any]) -> ServiceResponse:
+        """Get user's LinkedIn userinfo using /v2/userinfo endpoint"""
+        access_token = params.get("access_token")
+        user_id = params.get("user_id", "default_user")
+        
+        # Use stored token if no token provided
+        if not access_token:
+            stored_token = await get_valid_token(user_id)
+            if not stored_token:
+                return ServiceResponse(
+                    success=False,
+                    error="No valid stored token found. Please authenticate first."
+                )
+            access_token = stored_token.access_token
+        
+        try:
+            # Use the /v2/userinfo endpoint which was working before
+            userinfo_data = await self._make_authenticated_request(
+                access_token, 
+                "../userinfo"  # This goes to https://api.linkedin.com/v2/userinfo
+            )
+            
+            return ServiceResponse(
+                success=True,
+                data=userinfo_data
+            )
+        except Exception as e:
+            return ServiceResponse(
+                success=False,
+                error=f"Userinfo fetch failed: {str(e)}"
+            )
+
     async def _get_connections(self, params: Dict[str, Any]) -> ServiceResponse:
         """Get user's connections. The python3-linkedin SDK's `get_connections`
         method might be limited to V1 API or specific scopes.
@@ -415,14 +450,16 @@ class LinkedInService(BaseService):
 
         try:
             linkedin_client = self._get_linkedin_client(access_token)
-            # get_network_updates() often fetches updates that appear in the user's feed,
-            # which may include their own posts.
-            posts_data = linkedin_client.get_network_updates()
+            # get_network_updates() requires 'types' parameter
+            # Common types: 'SHAR' (shares), 'VIRL' (viral updates), 'JGRP' (job posts), etc.
+            posts_data = linkedin_client.get_network_updates(types=['SHAR'])
             return ServiceResponse(
                 success=True,
                 data=posts_data
             )
         except Exception as e:
+            # The SDK is likely encountering a permission error
+            error_msg = f"SDK error: {type(e).__name__}: {str(e)}"
             # Fallback to direct V2 API request if SDK fails, focusing on UGC Posts API.
             try:
                 # Need the authenticated user's URN for fetching their own UGC posts.
@@ -448,7 +485,7 @@ class LinkedInService(BaseService):
             except Exception as fallback_error:
                 return ServiceResponse(
                     success=False,
-                    error=f"Posts fetch failed via SDK and direct request: {str(e)} (fallback error: {str(fallback_error)})"
+                    error=f"Posts fetch failed via SDK and direct request: {error_msg} (fallback error: {str(fallback_error)})"
                 )
 
     async def _create_post(self, params: Dict[str, Any]) -> ServiceResponse:

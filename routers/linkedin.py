@@ -295,6 +295,26 @@ async def get_courses(
     
     return response.data
 
+@router.get("/userinfo")
+async def get_userinfo(
+    user_id: str = Query("default_user"),
+    access_token: Optional[str] = Query(None),
+    registry: ServiceRegistry = Depends(get_service_registry)
+):
+    """Get user's LinkedIn userinfo via /v2/userinfo endpoint"""
+    request = ServiceRequest(
+        service_name="linkedin",
+        method="get_userinfo",
+        parameters={"access_token": access_token, "user_id": user_id}
+    )
+    
+    response = await registry.handle_request(request)
+    
+    if not response.success:
+        raise HTTPException(status_code=401, detail=response.error)
+    
+    return response.data
+
 @router.get("/experience")
 async def get_experience(
     user_id: str = Query("default_user"),

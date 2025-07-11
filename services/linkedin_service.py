@@ -310,7 +310,7 @@ class LinkedInService(BaseService):
 
         posts = await self._make_authenticated_request(
             access_token,
-            f"ugcPosts?q=authors&authors=urn:li:person:{person_id}"
+            f"rest/posts?author=urn:li:person:{person_id}&q=author"
         )
         
         return ServiceResponse(

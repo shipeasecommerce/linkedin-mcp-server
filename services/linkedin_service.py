@@ -109,7 +109,7 @@ class LinkedInService(BaseService):
     async def _start_auth_flow(self, params: Dict[str, Any]) -> ServiceResponse:
         """Start LinkedIn OAuth flow - returns redirect URL without blocking"""
         # The python3-linkedin SDK can generate the auth URL
-        scope = params.get("scope", "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social")
+        scope = params.get("scope", "openid profile email w_member_social")
         state = params.get("state", "secure_random_state") # Remember to generate a unique state in production!
 
         if not self.client_id or not self.client_secret:
@@ -144,7 +144,7 @@ class LinkedInService(BaseService):
         """Generate LinkedIn OAuth authorization URL"""
         # This method is very similar to _start_auth_flow; we can keep them separate
         # if they serve slightly different frontend/backend initiation patterns.
-        scope = params.get("scope", "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social")
+        scope = params.get("scope", "openid profile email w_member_social")
         state = params.get("state", "random_state") # Again, generate a secure random state for production
 
         client = OAuth2Session(

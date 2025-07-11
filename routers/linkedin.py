@@ -26,7 +26,7 @@ def get_service_registry() -> ServiceRegistry:
 
 @router.get("/auth")
 async def start_linkedin_auth(
-    scope: str = Query("openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_dma_admin_pages_content"),
+    scope: str = Query("openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_dma_admin_pages_content"),
     registry: ServiceRegistry = Depends(get_service_registry)
 ):
     """Start LinkedIn OAuth flow by redirecting to authorization URL"""

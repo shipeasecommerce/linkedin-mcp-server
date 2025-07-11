@@ -283,15 +283,20 @@ class LinkedInService(BaseService):
     
     async def _get_posts(self, params: Dict[str, Any]) -> ServiceResponse:
         """Get user's posts/shares"""
-        token = params.get("access_token")
-        if not token:
-            return ServiceResponse(
-                success=False,
-                error="Access token is required"
-            )
+        access_token = params.get("access_token")
+        user_id = params.get("user_id", "default_user")
+
+        if not access_token:
+            stored_token = await get_valid_token(user_id)
+            if not stored_token:
+                return ServiceResponse(
+                    success=False,
+                    error="No valid stored token found. Please authenticate first."
+                )
+            access_token = stored_token.access_token
         
         posts = await self._make_authenticated_request(
-            token,
+            access_token,
             "shares?q=owners&owners=urn:li:person:{person-id}"
         )
         

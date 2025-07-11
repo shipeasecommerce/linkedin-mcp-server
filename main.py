@@ -211,13 +211,24 @@ async def mcp_endpoint(request: Request):
                             "inputSchema": {
                                 "type": "object",
                                 "properties": {
-                                    "scope": {"type": "string", "default": "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions"}
+                                    "scope": {"type": "string", "default": "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_marketing_solutions rw_marketing_solutions r_dma_admin_pages_content"}
                                 }
                             }
                         },
                         {
                             "name": "get_profile",
                             "description": "Get LinkedIn user profile",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {"type": "string", "default": "default_user"},
+                                    "access_token": {"type": "string"}
+                                }
+                            }
+                        },
+                        {
+                            "name": "get_posts",
+                            "description": "Get LinkedIn user's posts",
                             "inputSchema": {
                                 "type": "object",
                                 "properties": {
@@ -236,6 +247,39 @@ async def mcp_endpoint(request: Request):
                                     "user_id": {"type": "string", "default": "default_user"}
                                 },
                                 "required": ["content"]
+                            }
+                        },
+                        {
+                            "name": "get_experience",
+                            "description": "Get LinkedIn user's job experience",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {"type": "string", "default": "default_user"},
+                                    "access_token": {"type": "string"}
+                                }
+                            }
+                        },
+                        {
+                            "name": "get_courses",
+                            "description": "Get LinkedIn user's courses",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {"type": "string", "default": "default_user"},
+                                    "access_token": {"type": "string"}
+                                }
+                            }
+                        },
+                        {
+                            "name": "get_certifications",
+                            "description": "Get LinkedIn user's certifications",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {"type": "string", "default": "default_user"},
+                                    "access_token": {"type": "string"}
+                                }
                             }
                         }
                     ]
@@ -268,7 +312,7 @@ async def mcp_endpoint(request: Request):
                     }
                 })
             
-            elif tool_name in ["get_profile", "create_post"]:
+            elif tool_name in ["get_profile", "create_post", "get_posts", "get_experience", "get_courses", "get_certifications"]:
                 from services.base import ServiceRequest
                 service_request = ServiceRequest(
                     service_name="linkedin",

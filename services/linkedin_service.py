@@ -257,8 +257,7 @@ class LinkedInService(BaseService):
         return response.json()
 
     async def _get_profile(self, params: Dict[str, Any]) -> ServiceResponse:
-        """Get user's LinkedIn profile using stored or provided token,
-        preferring the SDK's `get_profile`."""
+        """Get user's LinkedIn profile using stored or provided token."""
         access_token = params.get("access_token")
         user_id = params.get("user_id", "default_user")
         selectors = params.get("selectors", None)
@@ -273,44 +272,47 @@ class LinkedInService(BaseService):
             access_token = stored_token.access_token
 
         try:
-            linkedin_client = self._get_linkedin_client(access_token)
+            # Default selectors if none are provided
+            default_selectors = [
+                'id', 'firstName', 'lastName', 'profilePicture(displayImage~:elements*(identifiers*))',
+                'vanityName', 'headline', 'summary', 'positions', 'educations',
+                'certifications', 'courses', 'skills', 'emailAddress'
+            ]
 
-            # The SDK's get_profile() typically fetches basic profile information.
-            # If more specific fields are needed, you might need to use _make_authenticated_request
-            # with specific projections, e.g., 'me?projection=(id,firstName,lastName,profilePicture(displayImage~:elements*(identifiers*)))'
+            projection_string = ""
             if selectors:
-                profile_data = linkedin_client.get_profile(selectors=selectors)
+                # Convert list of selectors to LinkedIn API projection format
+                # Example: ['id', 'first-name'] -> '(id,firstName)'
+                # Note: LinkedIn API uses camelCase for fields, so convert if necessary
+                camel_case_selectors = []
+                for s in selectors:
+                    if '-' in s:
+                        parts = s.split('-')
+                        camel_case_selectors.append(parts[0] + ''.join(p.capitalize() for p in parts[1:]))
+                    else:
+                        camel_case_selectors.append(s)
+                projection_string = f"({','.join(camel_case_selectors)})"
             else:
-                profile_data = linkedin_client.get_profile()
+                # Use a comprehensive default projection
+                projection_string = f"({','.join(default_selectors)})"
+
+            profile_data = await self._make_authenticated_request(
+                access_token,
+                f"me?projection={projection_string}"
+            )
 
             return ServiceResponse(
                 success=True,
                 data=profile_data
             )
         except Exception as e:
-            # Fallback to direct request if SDK fails or for more granular control.
-            # The userinfo endpoint often provides a good basic set of data.
-            try:
-                profile_data = await self._make_authenticated_request(
-                    access_token,
-                    "../userinfo"
-                )
-                return ServiceResponse(
-                    success=True,
-                    data=profile_data
-                )
-            except Exception as fallback_error:
-                return ServiceResponse(
-                    success=False,
-                    error=f"Profile fetch failed via SDK and direct request: {str(e)} (fallback error: {str(fallback_error)})"
-                )
+            return ServiceResponse(
+                success=False,
+                error=f"Profile fetch failed: {str(e)}"
+            )
 
     async def _get_user_info(self, params: Dict[str, Any]) -> ServiceResponse:
-        """Get user's basic info and email.
-        The SDK does not have a direct 'user_info' equivalent that fetches both
-        profile and email in one go. We'll continue using direct requests for this
-        for now, or you could combine `get_profile` and `_make_authenticated_request` for email.
-        """
+        """Get user's basic info and email."""
         access_token = params.get("access_token")
         user_id = params.get("user_id", "default_user")
 
@@ -324,23 +326,24 @@ class LinkedInService(BaseService):
             access_token = stored_token.access_token
 
         try:
-            # The SDK's `get_profile` can get basic profile fields.
-            linkedin_client = self._get_linkedin_client(access_token)
-            profile_data = linkedin_client.get_profile()
-
-            # For email, the OpenID Connect userinfo endpoint is usually preferred.
-            # The python3-linkedin SDK does not wrap this specific endpoint directly.
-            email_data = await self._make_authenticated_request(
+            # Use the /v2/me endpoint with projection for both profile and email
+            user_info_data = await self._make_authenticated_request(
                 access_token,
-                "../userinfo" # This provides email if 'email' scope was granted
+                "me?projection=(id,firstName,lastName,emailAddress)"
             )
-            user_email = email_data.get('email')
+            
+            profile_data = {
+                "id": user_info_data.get('id'),
+                "firstName": user_info_data.get('firstName'),
+                "lastName": user_info_data.get('lastName')
+            }
+            user_email = user_info_data.get('emailAddress', {}).get('elements', [{}])[0].get('handle~', {}).get('emailAddress')
 
             return ServiceResponse(
                 success=True,
                 data={
                     "profile": profile_data,
-                    "email": user_email # Extract just the email for simplicity
+                    "email": user_email
                 }
             )
         except Exception as e:

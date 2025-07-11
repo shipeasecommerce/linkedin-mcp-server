@@ -211,7 +211,7 @@ async def mcp_endpoint(request: Request):
                             "inputSchema": {
                                 "type": "object",
                                 "properties": {
-                                    "scope": {"type": "string", "default": "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_ads rw_ads r_dma_admin_pages_content"}
+                                    "scope": {"type": "string", "default": "openid profile email w_member_social w_organization_social r_organization_social r_compliance r_member_social r_dma_admin_pages_content"}
                                 }
                             }
                         },

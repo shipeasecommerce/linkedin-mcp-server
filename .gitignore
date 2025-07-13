@@ -67,3 +67,5 @@ htmlcov/
 .uv/
 
 
+# Local configuration files
+linkedin_tokens.db

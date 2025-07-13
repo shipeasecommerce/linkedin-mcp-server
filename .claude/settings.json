@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Users/ronnyfreites/.local/bin/uv python:*)",
+      "Bash(/Users/ronnyfreites/.local/bin/uv pip:*)",
+      "Bash(/Users/ronnyfreites/.local/bin/uv add *:*)",
+      "WebFetch(domain:apidog.com)",
+      "Bash(curl:*)",
+      "Bash(git commit:*)",
+      "Bash(uv sync:*)",
+      "Bash(rm:*)",
+      "Bash(timeout:*)"
+    ],
+    "deny": []
+  },
+  "enabledMcpjsonServers": [
+    {
+      "name": "linkedin-mcp",
+      "type": "stdio",
+      "command": "/Users/ronnyfreites/.local/bin/uv",
+      "args": ["--directory", "/Users/ronnyfreites/projects/linkedin-mcp", "run", "python", "main.py", "--stdio"]
+    }
+  ]
+}
